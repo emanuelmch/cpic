@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Emanuel Machado da Silva
+ * Copyright (c) 2021 Emanuel Machado da Silva
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,14 @@
  * SOFTWARE.
  */
 
-#include "comsci/travelling_salesman.h"
+#pragma once
 
-#include "common/runners.h"
+#include <cstdint>
 
-#include <iostream>
-#include <string>
-
-using std::cout;
-using std::string;
-
-using Puzzles::runningTime;
-
-int main() {
-  auto [success, duration] = runningTime([=] { return ComSci::TravellingSalesman::run(); });
-
-  if (!success) return 1;
-  cout << "All good, we took roughly " << duration << " microseconds!\n";
-}
+static const uint8_t CITY_COUNT = 5;
+static const uint8_t MAX_DISTANCE = 7 + 6 + 8 + 6 + 8 + 8;
+static const uint8_t DISTANCE_TABLE[5][5] = {{0, 3, 4, 2, 7}, //
+                                             {3, 0, 4, 6, 3}, //
+                                             {4, 4, 0, 5, 8}, //
+                                             {2, 6, 5, 0, 6}, //
+                                             {7, 3, 8, 6, 0}};

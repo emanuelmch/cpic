@@ -35,7 +35,7 @@ project(Puzzles VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native -fno-rtti")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -fomit-frame-pointer -fno-exceptions")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Werror -Wall -Wextra -Wno-missing-braces -Wsign-conversion")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Wextra -Wno-missing-braces -Wsign-conversion")
 if (CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?[Cc]lang")
     # https://bugs.llvm.org//show_bug.cgi?id=32155
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
@@ -84,6 +84,7 @@ include_directories(src)
 add_library(puzzles_lib OBJECT
         src/common/numbers/integer.cpp
         src/common/numbers/rational.cpp
+        src/comsci/travelling_salesman.cpp
         src/cpic/data/easy.cpp
         src/cpic/data/trivial.cpp
         src/cpic/model/board.cpp

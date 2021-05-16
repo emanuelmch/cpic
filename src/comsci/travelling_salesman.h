@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Emanuel Machado da Silva
+ * Copyright (c) 2021 Emanuel Machado da Silva
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,10 @@
  * SOFTWARE.
  */
 
-#include "comsci/travelling_salesman.h"
+#pragma once
 
-#include "common/runners.h"
+#include <array>
+namespace ComSci::TravellingSalesman {
 
-#include <iostream>
-#include <string>
-
-using std::cout;
-using std::string;
-
-using Puzzles::runningTime;
-
-int main() {
-  auto [success, duration] = runningTime([=] { return ComSci::TravellingSalesman::run(); });
-
-  if (!success) return 1;
-  cout << "All good, we took roughly " << duration << " microseconds!\n";
+bool run();
 }
