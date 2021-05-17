@@ -54,20 +54,19 @@ struct Chromosome {
       genes[i] = i;
     }
 
-    std::random_device rnd;
-    std::shuffle(genes.begin(), genes.end(), rnd);
+    std::shuffle(genes.begin(), genes.end(), std::random_device{});
     ensure(isValid());
   }
 
   [[nodiscard]] inline bool isValid() const {
     bool valid = true;
-    for (size_t i = 0; i < CITY_COUNT; ++i) {
-      valid = valid && std::find(genes.cbegin(), genes.cend(), i) != genes.cend();
+    for (size_t i = 0; valid && i < CITY_COUNT; ++i) {
+      valid = std::find(genes.cbegin(), genes.cend(), i) != genes.cend();
     }
     return valid;
   }
 
-  uint16_t fitness() {
+  constexpr uint16_t fitness() {
     if (_fitness == 0) {
       uint8_t distance = 0;
       for (size_t i = 0; i < genes.size() - 1; ++i) {
@@ -118,7 +117,7 @@ inline std::array<Chromosome, T> selectParents(const std::array<Chromosome, POPU
   std::array<Chromosome, T> result;
   std::for_each(result.begin(), result.end(), [&next](auto &it) { it = next(); });
   return result;
-};
+}
 
 inline Chromosome crossover(const Chromosome &left, const Chromosome &right) {
   Chromosome result;
@@ -155,21 +154,32 @@ inline void mutate(Chromosome *begin, Chromosome *end) {
       auto index2 = static_cast<unsigned long>(std::rand()) % it->genes.size();
       std::swap(it->genes[index1], it->genes[index2]);
 
-      it->_fitness = 0;
       ensure(it->isValid());
+      it->_fitness = 0;
     }
   }
 }
 
-bool ComSci::TravellingSalesman::run() {
-  uint64_t generations = 0;
+inline void sortPopulation(std::array<Chromosome, POPULATION_SIZE> *population) {
+  std::sort(population->begin(), population->end(),
+            [](auto left, auto right) { return left.fitness() > right.fitness(); });
+}
 
+std::array<Chromosome, POPULATION_SIZE> initialPopulation() {
   std::array<Chromosome, POPULATION_SIZE> population{};
   std::for_each(population.begin(), population.end(), [](auto &it) { it.randomize(); });
-  std::sort(population.begin(), population.end(),
-            [](auto left, auto right) { return left.fitness() > right.fitness(); });
 
+  sortPopulation(&population);
+
+  return population;
+}
+
+bool ComSci::TravellingSalesman::run() {
+  uint64_t generations = 0;
   uint16_t generationsSinceLastImprovement = 0;
+
+  auto initialPop = initialPopulation();
+  auto population = initialPop;
   Chromosome solution = population[0];
 
   do {
@@ -188,15 +198,18 @@ bool ComSci::TravellingSalesman::run() {
 
     mutate(next.begin(), next.end());
 
-    std::sort(next.begin(), next.end(), [](auto left, auto right) { return left.fitness() > right.fitness(); });
+    sortPopulation(&next);
+    ensure(next[0].fitness() >= population[0].fitness());
     population = next;
 
     if (population[0].fitness() > solution.fitness()) {
       solution = population[0];
       generationsSinceLastImprovement = 0;
     }
+
     ++generations;
-  } while (++generationsSinceLastImprovement < 10000);
+    ++generationsSinceLastImprovement;
+  } while (generationsSinceLastImprovement < 10000);
 
   std::cout << "Took " << generations << " generations: [" << (int)MAX_DISTANCE - solution.fitness() << "] [ ";
   for (int gene : solution.genes) {
