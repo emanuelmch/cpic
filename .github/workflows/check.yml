@@ -56,10 +56,6 @@ jobs:
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{ matrix.build_type }}
 
-    - name: Unit Tests
-      working-directory: ${{github.workspace}}/build
-      run: ctest -C Debug
-
     - name: Run puzzles
       working-directory: ${{github.workspace}}/build
       run: ./puzzles
