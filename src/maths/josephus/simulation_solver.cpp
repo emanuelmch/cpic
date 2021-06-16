@@ -68,12 +68,14 @@ Integer SimulationSolver::solve(const Integer &initialSize) {
     item = item->next;
   }
 
-  if (initialSize == 524288) ensure(!weak.expired()); // Just for debugging
-  item->next.reset(); // To avoid a cyclical reference
-  if (initialSize == 524288) ensure(!weak.expired()); // Just for debugging
+  return item->value;
 
-  auto final = item->value;
-  item.reset();
-  ensure(weak.expired());
-  return final;
+  //if (initialSize == 524288) ensure(!weak.expired()); // Just for debugging
+  //item->next.reset(); // To avoid a cyclical reference
+  //if (initialSize == 524288) ensure(!weak.expired()); // Just for debugging
+
+//  auto final = item->value;
+//  item.reset();
+//  ensure(weak.expired());
+//  return final;
 }
